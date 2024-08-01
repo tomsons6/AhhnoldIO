@@ -76,10 +76,24 @@ namespace Sacristan.Ahhnold.IO.Serialized
                 File.WriteAllText(SaveFilePath, json);
                 BuildHashFile(json);
             }
+            public static string GetSerializedJSON(object data)
+            {
+                return JsonUtility.ToJson(data);
+            }
 
             private T DeserializeJSON<T>()
             {
-                string json = System.IO.File.ReadAllText(SaveFilePath);
+                return GetDeserializedJSON<T>(SaveFilePath);
+            }
+
+            public static T GetDeserializedJSON<T>(string path)
+            {
+#if UNITY_PLAYSTATION
+                string json = path;
+                Debug.Log("Deserialize method - " + json);
+#else
+                string json = System.IO.File.ReadAllText(path);
+#endif
                 return JsonUtility.FromJson<T>(json);
             }
 
